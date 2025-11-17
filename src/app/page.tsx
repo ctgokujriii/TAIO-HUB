@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="relative overflow-x-hidden bg-gray-950 text-white">
       {/* Parallax background layer */}
-      <div className="parallax-bg absolute inset-0 bg-[url('/bg-pattern.png')] bg-cover bg-fixed opacity-10 -z-10"></div>
+      {<div className="parallax-bg absolute inset-0 bg-[url('/bg-pattern.png')] bg-cover bg-fixed opacity-10 -z-10"></div>}
 
       {/* Page Sections */}
       <main className="space-y-0">
