@@ -25,8 +25,8 @@ const Contact = () => {
     },
   });
 
-  const hasError = (name: string) => formik.touched[name] && formik.errors[name];
-
+const hasError = (name: keyof typeof formik.touched) =>
+  formik.touched[name] && formik.errors[name];
   return (
     <section id="contact" className="py-20 px-4 bg-gray-900">
       <motion.h2
