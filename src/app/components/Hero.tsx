@@ -105,7 +105,7 @@ function Hero() {
         transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
         className="relative text-4xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mt-10 mb-6 tracking-tight z-10 max-w-5xl mx-auto leading-tight"
       >
-        <span className="animate-gradient-shimmer bg-[length:180%_auto] bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent inline-block">
+        <span className="animate-gradient-shimmer bg-[length:200%_auto] bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent inline-block">
           From the first ring, to the final drop,<br className="hidden md:block" /> we've got you covered.
         </span>
       </motion.h1>
@@ -125,31 +125,7 @@ function Hero() {
         Get Started Today
       </motion.button>
 
-      {/* Scroll-down arrow */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 10, 0] }}
-        transition={{
-          opacity: { delay: 1.2, duration: 0.8 },
-          y: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
-        }}
-        className="absolute bottom-10 text-cyan-300 z-10 cursor-pointer"
-        onClick={() =>
-          document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })
-        }
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-10 h-10 mx-auto animate-bounce"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-        </svg>
-      </motion.div>
-
+     
       {/* Gradient Shimmer Animation */}
       <style jsx>{`
         @keyframes gradientShimmer {

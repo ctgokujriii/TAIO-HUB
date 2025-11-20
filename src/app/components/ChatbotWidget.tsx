@@ -1,46 +1,27 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect } from 'react';
 
-const ChatbotWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const BotpressChat = () => {
+  useEffect(() => {
+    // Inject Botpress webchat script
+    const script1 = document.createElement('script');
+    script1.src = 'https://cdn.botpress.cloud/webchat/v3.4/inject.js';
+    script1.async = true;
+    document.body.appendChild(script1);
 
-  return (
-    <>
-      <motion.button
-        initial={{ scale: 0, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        whileHover={{ scale: 1.1 }}
-        className="fixed bottom-6 right-6 bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-full shadow-lg z-50 font-poppins"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle Chatbot"
-      >
-        💬
-      </motion.button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: 300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 300 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-            className="fixed bottom-24 right-6 w-80 bg-gray-800 rounded-lg p-4 shadow-xl z-50 font-poppins"
-          >
-            <h3 className="text-white font-semibold mb-2">Chatbot Placeholder</h3>
-            <p className="text-gray-300 mb-4">This is a non-functional demo. Integrate your real chatbot here!</p>
-            <motion.button
-              whileHover={{ scale: 0.98 }}
-              onClick={() => setIsOpen(false)}
-              className="bg-red-500 text-white px-4 py-2 rounded text-sm"
-            >
-              Close
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+    const script2 = document.createElement('script');
+    script2.src = 'https://files.bpcontent.cloud/2025/11/20/16/20251120162526-4VK7TX98.js';
+    script2.defer = true;
+    document.body.appendChild(script2);
+
+    return () => {
+      document.body.removeChild(script1);
+      document.body.removeChild(script2);
+    };
+  }, []);
+
+  return null; // no JSX needed, script handles the chat UI
 };
 
-export default ChatbotWidget;
+export default BotpressChat;
