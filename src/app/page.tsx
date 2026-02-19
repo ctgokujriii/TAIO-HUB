@@ -14,7 +14,7 @@ import QuoteEstimator from './components/QuoteEstimator';
 import HeroSimulation from './components/HeroSimulation';
 import Testimonials from './components/Testimonials';
 import LoginDropdown from './components/LoginDropdown';
-
+import LatestUpdates from './components/LatestUpdates'; // <--- NEW IMPORT
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="relative overflow-x-hidden bg-gray-950 text-white">
       {/* Parallax background layer */}
-      {<div className="parallax-bg absolute inset-0 bg-[url('/bg-pattern.png')] bg-cover bg-fixed opacity-10 -z-10"></div>}
+      <div className="parallax-bg absolute inset-0 bg-[url('/bg-pattern.png')] bg-cover bg-fixed opacity-10 -z-10"></div>
 
       {/* Page Sections */}
       <main className="space-y-0">
@@ -51,18 +51,16 @@ export default function Home() {
         <HeroSimulation />
         <Services />
         <QuoteEstimator />
+        
+        <LatestUpdates /> {/* <--- NEW SECTION ADDED HERE */}
+        
         <Testimonials />
         <About />
         <Contact />
         
       </main>
 
-      <Footer />
       <ChatbotWidget />
-
-      <div className="absolute bottom-4 w-full text-center text-gray-500 text-sm">
-        
-      </div>
     </div>
   );
 }
