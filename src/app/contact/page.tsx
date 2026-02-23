@@ -185,14 +185,14 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
                   <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange}
                     className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
                     placeholder="+44 7XXX XXX XXX" />
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">Company Name</label>
+                  <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">Company Name *</label>
                   <input type="text" id="company" name="company" value={formData.company} onChange={handleChange}
                     className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
                     placeholder="Your Company Name" />

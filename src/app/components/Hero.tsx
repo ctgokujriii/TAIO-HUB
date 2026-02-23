@@ -2,12 +2,16 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import { useCallback } from "react";
 import LoginDropdown from "./LoginDropdown";
 
 function Hero() {
+  const router = useRouter();
+
   const particlesInit = useCallback(async (engine: any) => {
     await loadSlim(engine);
   }, []);
@@ -86,16 +90,19 @@ function Hero() {
         />
       </motion.div>
 
-      {/* Trusted Badge - NEW & BEAUTIFUL */}
+      {/* Trusted Badge - NOW CLICKABLE TO GDPR PAGE */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
         className="mt-8 z-10"
       >
-        <span className="inline-block bg-gradient-to-r from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border border-cyan-500/30 text-cyan-300 px-6 py-3 rounded-full text-sm md:text-base font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/40 transition-all duration-300">
+        <Link 
+          href="/gdpr"
+          className="inline-block bg-gradient-to-r from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border border-cyan-500/30 text-cyan-300 px-6 py-3 rounded-full text-sm md:text-base font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/40 hover:scale-105 transition-all duration-300 cursor-pointer"
+        >
           GDPR COMPLIANT
-        </span>
+        </Link>
       </motion.div>
 
       {/* Headline */}
@@ -110,7 +117,7 @@ function Hero() {
         </span>
       </motion.h1>
 
-      {/* CTA Button */}
+      {/* CTA Button - NOW ROUTES TO THE NEW QUOTE PAGE */}
       <motion.button
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -118,14 +125,11 @@ function Hero() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-cyan-500 hover:to-blue-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-400/70 transition-all duration-300 z-10 mt-8"
-        onClick={() =>
-          document.getElementById("quote-estimator")?.scrollIntoView({ behavior: "smooth" })
-        }
+        onClick={() => router.push('/quote')}
       >
         Get Started Today
       </motion.button>
 
-     
       {/* Gradient Shimmer Animation */}
       <style jsx>{`
         @keyframes gradientShimmer {

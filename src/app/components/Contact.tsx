@@ -161,7 +161,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number * </label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
                   <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange}
                     className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
                     placeholder="+44 7XXX XXX XXX" />
@@ -183,7 +183,7 @@ export default function Contact() {
                     <option value="UK Council School Runs Outsourcing">UK Council School Runs Outsourcing</option>
                     <option value="Admin Management">Admin Management</option>
                     <option value="UK/US Trucking Solutions">UK/US Trucking Solutions</option>
-                    <option value="Cabs Dispatch/Telephonist Outsource (other than UK)">Cabs Dispatch/Telephonist Outsource (other than UK)</option>
+                    <option value="Cabs Dispatch/Telephonist Outsource (other than UK)">Cabs Dispatch/Telephonist Outsource </option>
                   </select>
                 </div>
 
