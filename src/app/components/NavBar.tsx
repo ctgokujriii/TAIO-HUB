@@ -52,7 +52,7 @@ export default function Navbar() {
           ))}
           
           <Link
-            href="QuoteEstimator"
+            href="quote"
             className="px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
           >
             Get Quote

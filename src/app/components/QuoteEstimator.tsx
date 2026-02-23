@@ -38,7 +38,7 @@ export default function QuoteEstimator() {
   const router = useRouter();
 
   // State Management
-  const [step, setStep] = useState<number>(1); // Step 1: Country, Step 2: CSRs, Step 3: Dispatchers, Step 4: Results
+  const [step, setStep] = useState<number>(1); 
   const [countryKey, setCountryKey] = useState<string>('');
   const [csrCount, setCsrCount] = useState<number | null>(null);
   const [dispatchers, setDispatchers] = useState<number | null>(null);
@@ -87,8 +87,7 @@ export default function QuoteEstimator() {
     const val = e.target.value;
     
     if (val === 'OTHER') {
-      const message = "I am looking for taxi outsourcing services from a location outside of the 5 mentioned -- Your message here";
-      // Assuming your contact page is at /contact and accepts a 'message' query param
+      const message = "I am looking for taxi outsourcing services from a location outside of the 5 above mentioned -- Your message here";
       router.push(`/contact?message=${encodeURIComponent(message)}`);
       return;
     }
@@ -147,7 +146,7 @@ export default function QuoteEstimator() {
   const getMultiplier = (tf: Timeframe) => {
     if (tf === 'monthly') return HOURS.monthly;
     if (tf === 'annually') return HOURS.annually;
-    return 1; // hourly
+    return 1; 
   };
 
   const currentMultiplier = getMultiplier(timeframe);
@@ -178,7 +177,7 @@ export default function QuoteEstimator() {
                   value={countryKey}
                   onChange={handleCountrySelect}
                   className="w-full max-w-md mx-auto p-3 rounded bg-white/10 text-white text-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all appearance-none cursor-pointer"
-                  autoFocus
+                  // REMOVED autoFocus
                 >
                   <option value="" disabled className="text-gray-500 bg-gray-900">Select your country</option>
                   {Object.entries(COUNTRY_CONFIG).map(([key, data]) => (
@@ -200,7 +199,7 @@ export default function QuoteEstimator() {
                 <input
                   type="number"
                   min={0}
-                  autoFocus
+                  // REMOVED autoFocus
                   aria-label={`Number of ${currentRoleName}`}
                   value={csrCount ?? ''}
                   onChange={(e) => {
@@ -220,7 +219,7 @@ export default function QuoteEstimator() {
                 <input
                   type="number"
                   min={0}
-                  autoFocus
+                  // REMOVED autoFocus
                   aria-label="Number of dispatchers"
                   value={dispatchers ?? ''}
                   onChange={(e) => {
