@@ -11,7 +11,7 @@ const navLinks = [
   { name: 'Services', href: '/#services' }, // Anchor link to homepage section
   { name: 'Blog', href: '/blog' },
   { name: 'News', href: '/news' },
-  { name: 'Contact', href: '/#contact' },
+  { name: 'Contact', href: '/contact' },
 ];
 
 export default function Navbar() {

@@ -4,7 +4,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useAnimation } from 'framer-motion';
-import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 const Footer = () => {
   const controls = useAnimation();
@@ -31,10 +31,15 @@ const Footer = () => {
       icon: Instagram,
       url: 'https://www.instagram.com/taio.hub/',
     },
+    {
+      name: 'LinkedIn',
+      icon: Linkedin,
+      url: 'https://www.linkedin.com/company/taio-hub/', // <-- Update this URL!
+    },
   ];
 
   return (
-    <footer className="py-12 px-4 bg-gray-950 border-t border-gray-800">
+    <footer className="py-12 px-4 bg-gray-950 border-t border-gray-800 relative z-50">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={controls}
@@ -56,7 +61,7 @@ const Footer = () => {
             Terms of Service
           </Link>
           <Link
-            href="/#contact"
+            href="/contact" // <-- Updated to point to your new contact page
             className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
           >
             Contact

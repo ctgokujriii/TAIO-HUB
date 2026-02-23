@@ -1,9 +1,11 @@
-import { useState, useRef } from 'react';
+'use client';
+import { useState, useRef, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
-import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+// Note: Adjust this import path if your hooks folder is located elsewhere
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver'; 
 import emailjs from '@emailjs/browser';
 
-export default function Contact() {
+export default function ContactPage() {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.1 });
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -12,12 +14,28 @@ export default function Contact() {
     email: '',
     phone: '',
     company: '',
-    service: 'dispatch',
+    service: 'Cabs Dispatch Outsourcing',
     message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Check the URL for the message parameter passed from QuoteEstimator
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const msg = urlParams.get('message');
+      
+      if (msg) {
+        setFormData(prev => ({
+          ...prev,
+          message: msg,
+          service: 'Cabs Dispatch/Telephonist Outsource (other than UK)'
+        }));
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +44,8 @@ export default function Contact() {
 
     try {
       await emailjs.send(
-        'service_z5fdow8',     // ← Replace with your EmailJS Service ID
-        'template_4zwzfra',    // ← Replace with your EmailJS Template ID
+        'service_z5fdow8',     // Replace with your EmailJS Service ID
+        'template_4zwzfra',    // Replace with your EmailJS Template ID
         {
           name: formData.name,
           email: formData.email,
@@ -35,15 +53,21 @@ export default function Contact() {
           company: formData.company || 'Not provided',
           service: formData.service,
           message: formData.message,
-          to_email: 'ali.aleem75@gmail.com',  // ← This ensures it goes to you
+          to_email: 'ali.aleem75@gmail.com',  
         },
-        'pQzQumk14f9kJ8B0i'      // ← Replace with your EmailJS Public Key
+        'pQzQumk14f9kJ8B0i'      // Replace with your EmailJS Public Key
       );
 
       setSubmitStatus('success');
       formRef.current?.reset();
+      
+      // Clean up the URL so the message parameter disappears after successful submission
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       setFormData({
-        name: '', email: '', phone: '', company: '', service: 'dispatch', message: ''
+        name: '', email: '', phone: '', company: '', service: 'Cabs Dispatch Outsourcing', message: ''
       });
     } catch (error) {
       console.error('EmailJS error:', error);
@@ -64,14 +88,17 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen pt-32 pb-24 relative bg-gray-950 text-white overflow-hidden">
+      {/* Background layer to keep consistency with your site theme */}
+      <div className="absolute inset-0 bg-[url('/bg-pattern.png')] bg-cover bg-fixed opacity-10 -z-10"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div ref={ref} className="text-center mb-16">
-          <h2 className={`text-4xl sm:text-5xl font-bold mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h1 className={`text-4xl sm:text-5xl font-bold mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               Get Your Free Quote
             </span>
-          </h2>
+          </h1>
           <p className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             Ready to transform your operations? Let's discuss how we can help your business grow.
           </p>
@@ -80,7 +107,7 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Info Column */}
           <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-cyan-500/20 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-cyan-500/20 rounded-2xl p-8 h-full">
               <h3 className="text-2xl font-bold mb-6 text-white">Contact Information</h3>
 
               <div className="space-y-6 mb-8">
@@ -142,10 +169,7 @@ export default function Contact() {
           <div className={`transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
             <form ref={formRef} onSubmit={handleSubmit} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-cyan-500/20 rounded-2xl p-8">
               <div className="space-y-6">
-                {/* All your input fields remain the same */}
-                {/* ... (name, email, phone, company, service, message) ... */}
-                {/* I'll keep them exactly as you had for brevity */}
-
+                
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
                   <input type="text" id="name" name="name" required value={formData.name} onChange={handleChange}
@@ -161,14 +185,14 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number * </label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
                   <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange}
                     className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
                     placeholder="+44 7XXX XXX XXX" />
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">Company Name *</label>
+                  <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">Company Name</label>
                   <input type="text" id="company" name="company" value={formData.company} onChange={handleChange}
                     className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
                     placeholder="Your Company Name" />
@@ -177,7 +201,7 @@ export default function Contact() {
                 <div>
                   <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-2">Service Interested In *</label>
                   <select id="service" name="service" required value={formData.service} onChange={handleChange}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all">
+                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all [&>option]:bg-gray-900">
                     <option value="Cabs Dispatch Outsourcing">Cabs Dispatch Outsourcing</option>
                     <option value="Cabs Telephonist Outsourcing">Cabs Telephonist Outsourcing</option>
                     <option value="UK Council School Runs Outsourcing">UK Council School Runs Outsourcing</option>
@@ -203,13 +227,13 @@ export default function Contact() {
                 </button>
 
                 {submitStatus === 'success' && (
-                  <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-green-400 text-center font-medium">
+                  <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-green-400 text-center font-medium mt-4">
                     Thank you! Your message has been sent successfully. We'll reply within 24 hours.
                   </div>
                 )}
 
                 {submitStatus === 'error' && (
-                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-400 text-center font-medium">
+                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-400 text-center font-medium mt-4">
                     Oops! Something went wrong. Please email us directly at info@taiohub.com
                   </div>
                 )}
@@ -218,6 +242,6 @@ export default function Contact() {
           </div>
         </div>
       </div>
-    </section>
+    </main>
   );
 }
