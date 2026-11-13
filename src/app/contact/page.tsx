@@ -14,14 +14,14 @@ export default function ContactPage() {
     email: '',
     phone: '',
     company: '',
-    service: 'Cabs Dispatch Outsourcing',
+    service: 'Website Design & Development',
     message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  // Check the URL for the message parameter passed from QuoteEstimator
+  // Check the URL for the message parameter passed in the link
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -31,7 +31,6 @@ export default function ContactPage() {
         setFormData(prev => ({
           ...prev,
           message: msg,
-          service: 'Cabs Dispatch/Telephonist Outsource '
         }));
       }
     }
@@ -68,7 +67,7 @@ export default function ContactPage() {
       }
 
       setFormData({
-        name: '', email: '', phone: '', company: '', service: 'Cabs Dispatch Outsourcing', message: ''
+        name: '', email: '', phone: '', company: '', service: 'Website Design & Development', message: ''
       });
     } catch (error) {
       console.error('EmailJS error:', error);
@@ -112,7 +111,7 @@ export default function ContactPage() {
             Get Your <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Free Quote</span>
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Ready to transform your operations? Let's discuss how we can help your business grow.
+            Tell us about your website or marketing project and we will come back with a plan and a price.
           </p>
         </motion.div>
 
@@ -164,12 +163,13 @@ export default function ContactPage() {
                   <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-2">Service Interested In *</label>
                   <select id="service" name="service" required value={formData.service} onChange={handleChange}
                     className="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-3 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all [&>option]:bg-gray-900 cursor-pointer">
-                    <option value="Cabs Dispatch Outsourcing">Cabs Dispatch Outsourcing</option>
-                    <option value="Cabs Telephonist Outsourcing">Cabs Telephonist Outsourcing</option>
-                    <option value="UK Council School Runs Outsourcing">UK Council School Runs Outsourcing</option>
-                    <option value="Admin Management">Admin Management</option>
-                    <option value="UK/US Trucking Solutions">UK/US Trucking Solutions</option>
-                    <option value="Cabs Dispatch/Telephonist Outsource ">Cabs Dispatch/Telephonist Outsource </option>
+                    <option value="Website Design & Development">Website Design & Development</option>
+                    <option value="SEO">SEO</option>
+                    <option value="Paid Ads">Paid Ads</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Brand & Content">Brand & Content</option>
+                    <option value="Hosting & Care">Hosting & Care</option>
+                    <option value="Not sure yet">Not sure yet</option>
                   </select>
                 </div>
 
@@ -264,11 +264,6 @@ export default function ContactPage() {
                   <div className="flex justify-between border-t border-cyan-500/10 pt-3">
                     <span>Saturday</span>
                     <span>9:00 AM - 4:00 PM</span>
-                  </div>
-                  <div className="pt-3">
-                    <span className="text-cyan-400 font-bold tracking-wide uppercase text-xs flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" /> 24/7 Emergency Dispatch
-                    </span>
                   </div>
                 </div>
               </div>

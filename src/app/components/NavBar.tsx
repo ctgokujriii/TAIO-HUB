@@ -11,7 +11,6 @@ const navLinks = [
   { name: 'About', href: '/about-us' },
   { name: 'Services', href: '/services' },
   
-  { name: 'Blog', href: '/blog' },
   { name: 'News', href: '/news' },
   { name: 'Contact', href: '/contact' },
 ];
@@ -64,10 +63,10 @@ export default function Navbar() {
           })}
           
           <Link
-            href="/quote"
+            href="/contact"
             className="px-6 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-sm font-bold transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-95"
           >
-            Get Quote
+            Start a project
           </Link>
         </div>
 
@@ -109,11 +108,11 @@ export default function Navbar() {
               })}
               
               <Link
-                href="/quote"
+                href="/contact"
                 onClick={() => setIsOpen(false)}
                 className="mt-4 w-full text-center bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-xl font-bold text-lg"
               >
-                Get Started Today
+                Start a project
               </Link>
             </div>
           </motion.div>

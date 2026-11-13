@@ -7,27 +7,27 @@ const sections = [
   {
     icon: ShieldCheck,
     title: 'Our Commitment to Privacy',
-    content: 'At TAIO Hub, we process thousands of interactions daily. We recognize that in the dispatch and transportation industry, data security is paramount. We are fully committed to complying with the General Data Protection Regulation (GDPR) and the UK Data Protection Act to ensure that passenger, driver, and client data is handled with the utmost integrity.'
+    content: 'At TAIO Hub, we build websites and run marketing for our clients, which means we handle personal data on their behalf. We are committed to complying with the General Data Protection Regulation (GDPR) and the UK Data Protection Act, so that client and customer data is handled with integrity.'
   },
   {
     icon: Database,
     title: 'Data Controller vs. Data Processor',
-    content: 'In the context of our outsourcing services, our clients (taxi firms and dispatch businesses) are the Data Controllers. TAIO Hub acts strictly as a Data Processor. We only access, use, and process personal data (such as passenger names, contact numbers, and pickup/drop-off locations) under the explicit written instructions of our clients to fulfill our dispatch and telephonist duties.'
+    content: 'For the work we do, our clients are the Data Controllers and TAIO Hub acts as a Data Processor. We only access, use and process personal data (such as names, contact details and enquiries sent through website forms, and audience or analytics data from advertising and social platforms) under the written instructions of our clients, and only to deliver the agreed services.'
   },
   {
     icon: Lock,
     title: 'Security & Infrastructure',
-    content: 'We employ state-of-the-art security measures to protect data from unauthorized access, alteration, disclosure, or destruction. This includes end-to-end encryption for communication channels, strict role-based access controls for our telephonists and dispatchers, and secure, isolated network environments for all client operations.'
+    content: 'We use appropriate technical and organisational measures to protect data from unauthorised access, alteration, disclosure or destruction. This includes encrypted connections on the websites we build, role-based access to client accounts and platforms, and keeping each client\'s data separate.'
   },
   {
     icon: FileText,
     title: 'Data Retention & Deletion',
-    content: 'We do not hold client or passenger data longer than is strictly necessary to perform our services. Call logs, dispatch records, and performance metrics are retained according to the parameters set by the Data Controller and are securely permanently deleted upon the termination of the service contract or upon direct request.'
+    content: 'We do not hold client or customer data longer than is necessary to perform our services. Form submissions, campaign data and reports are retained according to the parameters set by the Data Controller and are securely deleted when the service contract ends or on direct request.'
   },
   {
     icon: UserCheck,
     title: 'Data Subject Rights',
-    content: 'We fully support our clients in honoring Data Subject Rights. If a passenger or driver requests access to their data, asks for rectification, or invokes their "Right to be Forgotten", TAIO Hub has established rapid-response protocols to assist the Data Controller in executing these requests within the legally required timeframes.'
+    content: 'We support our clients in honouring Data Subject Rights. If an individual asks to access their data, asks for it to be corrected, or invokes their "Right to be Forgotten", TAIO Hub will assist the Data Controller in carrying out the request within the legally required timeframes.'
   }
 ];
 

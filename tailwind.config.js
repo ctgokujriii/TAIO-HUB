@@ -10,10 +10,9 @@ module.exports = {
   theme: {
   	extend: {
   		fontFamily: {
-  			poppins: [
-  				'Poppins',
-  				'sans-serif'
-  			]
+  			poppins: ['var(--font-body)', 'sans-serif'],
+  			display: ['var(--font-display)', 'sans-serif'],
+  			mono: ['var(--font-mono)', 'monospace']
   		},
   		animation: {
   			shake: 'shake 0.5s ease-in-out'
@@ -37,6 +36,15 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			ink: 'var(--ink)',
+  			soft: 'var(--muted-ink)',
+  			line: 'var(--line)',
+  			night: 'var(--night)',
+  			// greys re-tinted to the night-city indigo so every existing page picks up the new look
+  			gray: {
+  				50: '#f7f7fd', 100: '#efeefa', 200: '#e0dff3', 300: '#c9c7e6', 400: '#a3a0c8',
+  				500: '#6f6ba6', 600: '#3b3670', 700: '#262152', 800: '#17133a', 900: '#0d0a24', 950: '#070512'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

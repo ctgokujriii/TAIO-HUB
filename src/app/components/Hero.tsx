@@ -1,147 +1,118 @@
 'use client';
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import { useCallback } from "react";
-import LoginDropdown from "./LoginDropdown";
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
+import { districts } from './cityData';
 
-function Hero() {
-  const router = useRouter();
+const CityScene = dynamic(() => import('./CityScene'), { ssr: false });
 
-  const particlesInit = useCallback(async (engine: any) => {
-    await loadSlim(engine);
+const STOPS = districts.length; // plus the overview at 0
+
+export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const stop = useRef(0);
+  const [active, setActive] = useState(-1);
+
+  // Scrolling through this tall section moves the camera from the overview to each district.
+  useEffect(() => {
+    const onScroll = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const range = el.offsetHeight - window.innerHeight;
+      const p = Math.min(1, Math.max(0, -el.getBoundingClientRect().top / range));
+      stop.current = p * STOPS;
+      setActive(Math.round(stop.current) - 1);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
+  const goTo = (i: number) => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: top + ((i + 1) / STOPS) * (el.offsetHeight - window.innerHeight), behavior: 'smooth' });
+  };
+
   return (
-    <section className="hero-bg relative min-h-screen flex flex-col items-center justify-center text-center px-4 py-20 overflow-hidden">
+    <section ref={sectionRef} className="relative -mt-20" style={{ height: `${(STOPS + 1) * 100}svh` }}>
+      <div className="hero-city sticky top-0 h-[100svh] overflow-hidden">
+        <CityScene stop={stop} active={active} onSelect={goTo} />
+        <div className="hero-scrim pointer-events-none absolute inset-0" />
 
-      {/* LOGIN DROPDOWN - Top Right */}
-      <div className="absolute top-6 right-8 z-50">
-        <LoginDropdown />
+        <div className="pointer-events-none absolute inset-0 mx-auto max-w-7xl px-6">
+          {/* Overview */}
+          <div className={`stop-panel ${active < 0 ? 'is-on' : ''}`} aria-hidden={active >= 0}>
+            <p className="mono-label mb-5">Digital marketing + web development</p>
+            <h1 className="font-display text-[2.5rem] font-semibold leading-[1.04] tracking-tight text-ink sm:text-6xl lg:text-7xl">
+              Websites and marketing, built as one system.
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-soft sm:text-lg">
+              TAIO Hub designs and builds your website, then brings people to it through search, ads and
+              social. One team, with every part connected.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-4">
+              <Link href="/contact" className="btn-primary group" tabIndex={active < 0 ? 0 : -1}>
+                Start a project
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+              <button onClick={() => goTo(0)} className="btn-ghost gap-2" tabIndex={active < 0 ? 0 : -1}>
+                Scroll to tour the city
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* One panel per district */}
+          {districts.map((d, i) => (
+            <article
+              key={d.id}
+              className={`stop-panel ${active === i ? 'is-on' : ''}`}
+              style={{ ['--c' as string]: d.color }}
+              aria-hidden={active !== i}
+            >
+              <p className="mono-label !text-[var(--c)]">
+                {String(i + 1).padStart(2, '0')} / {String(STOPS).padStart(2, '0')} · {d.tag}
+              </p>
+              <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink sm:text-6xl">{d.name}</h2>
+              <p className="mono-label mt-6">Why it matters</p>
+              <p className="mt-2 max-w-lg text-base leading-relaxed text-ink/90 sm:text-lg">{d.why}</p>
+              <p className="mono-label mt-6">What you get</p>
+              <ul className="mt-2 space-y-1.5 text-soft">
+                {d.points.map((pt) => (
+                  <li key={pt} className="flex gap-3">
+                    <span className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--c)]" />
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+
+        {/* Rail: where you are in the tour */}
+        <nav className="city-rail" aria-label="Services tour">
+          {districts.map((d, i) => (
+            <button
+              key={d.id}
+              onClick={() => goTo(i)}
+              aria-label={d.name}
+              aria-current={active === i}
+              className="city-rail-dot"
+              style={{ ['--c' as string]: d.color }}
+            >
+              <span>{d.name}</span>
+            </button>
+          ))}
+        </nav>
       </div>
-
-      {/* Particle Background */}
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: { color: { value: "transparent" } },
-          fpsLimit: 60,
-          detectRetina: true,
-          particles: {
-            number: { value: 100, density: { enable: true, area: 700 } },
-            color: { value: "#00bfff" },
-            shape: { type: "circle" },
-            opacity: {
-              value: 0.8,
-              random: true,
-              anim: { enable: true, speed: 26, opacity_min: 0.8, sync: false },
-            },
-            size: { value: { min: 1, max: 3 } },
-            move: {
-              enable: true,
-              speed: 2,
-              direction: "none",
-              outModes: "bounce",
-            },
-            links: {
-              enable: true,
-              color: "#abb8c2",
-              distance: 120,
-              opacity: 0.4,
-              width: 2,
-            },
-          },
-        }}
-        className="absolute inset-0 z-0"
-      />
-
-      {/* Glowing Background Orb */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: [1, 1.1, 1], opacity: 1 }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          repeatType: "mirror",
-          ease: "easeInOut",
-        }}
-        className="absolute w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-700 blur-3xl opacity-40 top-[5%]"
-      />
-
-      {/* Animated Logo */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: -30 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className="z-10 mt-[5vh]"
-      >
-        <Image
-          src="/Logo.png"
-          alt="TAIO Hub Logo"
-          width={250}
-          height={350}
-          className="rounded-full shadow-2xl shadow-cyan-500/30"
-          priority
-        />
-      </motion.div>
-
-      {/* Trusted Badge - NOW CLICKABLE TO GDPR PAGE */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="mt-8 z-10"
-      >
-        <Link 
-          href="/gdpr"
-          className="inline-block bg-gradient-to-r from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border border-cyan-500/30 text-cyan-300 px-6 py-3 rounded-full text-sm md:text-base font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/40 hover:scale-105 transition-all duration-300 cursor-pointer"
-        >
-          GDPR COMPLIANT
-        </Link>
-      </motion.div>
-
-      {/* Headline */}
-      <motion.h1
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
-        className="relative text-4xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mt-10 mb-6 tracking-tight z-10 max-w-5xl mx-auto leading-tight"
-      >
-        <span className="animate-gradient-shimmer bg-[length:200%_auto] bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent inline-block">
-          From the first ring, to the final drop,<br className="hidden md:block" /> we've got you covered.
-        </span>
-      </motion.h1>
-
-      {/* CTA Button - NOW ROUTES TO THE NEW QUOTE PAGE */}
-      <motion.button
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.9 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-cyan-500 hover:to-blue-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-400/70 transition-all duration-300 z-10 mt-8"
-        onClick={() => router.push('/quote')}
-      >
-        Get Started Today
-      </motion.button>
-
-      {/* Gradient Shimmer Animation */}
-      <style jsx>{`
-        @keyframes gradientShimmer {
-          0% { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-        .animate-gradient-shimmer {
-          animation: gradientShimmer 6s linear infinite;
-        }
-      `}</style>
     </section>
   );
 }
-
-export default Hero;
