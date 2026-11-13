@@ -1,14 +1,17 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Sora, Manrope, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import Footer from './components/Footer' // Import your existing Footer
+import Footer from './components/Footer'
 import Navbar from './components/NavBar'
 
-const inter = Inter({ subsets: ['latin'] })
+const display = Sora({ subsets: ['latin'], variable: '--font-display' })
+const body = Manrope({ subsets: ['latin'], variable: '--font-body' })
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'TAIO Hub',
-  description: 'Your Next Cab Dispatch Is With Us',
+  title: 'TAIO Hub | Digital marketing and web development',
+  description:
+    'TAIO Hub designs and builds websites, then grows them with SEO, paid ads, social media and content. One team, one connected system.',
 }
 
 export default function RootLayout({
@@ -17,17 +20,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} bg-gray-950 text-white`}>
-        {/* Navbar sits fixed at the top */}
+    <html lang="en" className={`scroll-smooth ${display.variable} ${body.variable} ${mono.variable}`}>
+      <body>
         <Navbar />
-        
-        {/* Main Content (Home, Blog, News, etc.) */}
-        <main className="min-h-screen pt-20"> 
-          {children}
-        </main>
-
-        {/* Footer sits at the bottom of every page */}
+        <main className="min-h-screen pt-20">{children}</main>
         <Footer />
       </body>
     </html>

@@ -1,147 +1,85 @@
 'use client';
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import { useCallback } from "react";
-import LoginDropdown from "./LoginDropdown";
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { districts } from './cityData';
 
-function Hero() {
-  const router = useRouter();
+const CityScene = dynamic(() => import('./CityScene'), { ssr: false });
 
-  const particlesInit = useCallback(async (engine: any) => {
-    await loadSlim(engine);
+export default function Hero() {
+  const [active, setActive] = useState(0);
+  const touched = useRef(false);
+
+  // Tour the districts until the visitor picks one themselves.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setInterval(() => {
+      if (!touched.current) setActive((a) => (a + 1) % districts.length);
+    }, 4200);
+    return () => clearInterval(id);
   }, []);
 
+  const select = (i: number, fromUser: boolean) => {
+    if (fromUser) touched.current = true;
+    setActive(i);
+  };
+
+  const d = districts[active];
+
   return (
-    <section className="hero-bg relative min-h-screen flex flex-col items-center justify-center text-center px-4 py-20 overflow-hidden">
+    <section className="hero-city relative -mt-20 flex min-h-[100svh] flex-col justify-end overflow-hidden">
+      <CityScene active={active} onSelect={select} />
+      <div className="hero-scrim pointer-events-none absolute inset-0" />
 
-      {/* LOGIN DROPDOWN - Top Right */}
-      <div className="absolute top-6 right-8 z-50">
-        <LoginDropdown />
+      <div className="pointer-events-none relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-6 pb-10 pt-[50svh] lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end lg:pb-16 lg:pt-40">
+        <div className="hero-copy pointer-events-auto max-w-2xl">
+          <p className="mono-label mb-5">Digital marketing + web development</p>
+          <h1 className="font-display text-[2.6rem] font-semibold leading-[1.04] tracking-tight text-ink sm:text-6xl lg:text-7xl">
+            Websites and marketing, built as one system.
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-soft">
+            TAIO Hub designs and builds your website, then brings people to it through search, ads and
+            social. One team, with every part connected.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Link href="/contact" className="btn-primary group">
+              Start a project
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+            <Link href="/services" className="btn-ghost">
+              See what we do
+            </Link>
+          </div>
+        </div>
+
+        {/* Readout for the selected district */}
+        <aside className="hud pointer-events-auto" style={{ ['--c' as string]: d.color }} aria-live="polite">
+          <div className="flex items-center justify-between">
+            <span className="mono-label !text-[var(--c)]">{d.tag}</span>
+            <span className="mono-label">
+              {String(active + 1).padStart(2, '0')} / {String(districts.length).padStart(2, '0')}
+            </span>
+          </div>
+          <h2 className="mt-3 font-display text-2xl font-semibold text-ink">{d.name}</h2>
+          <p className="mt-2 min-h-[4.5rem] text-sm leading-relaxed text-soft">{d.desc}</p>
+          <div className="mt-4 flex gap-1.5" role="tablist" aria-label="Services">
+            {districts.map((x, i) => (
+              <button
+                key={x.id}
+                role="tab"
+                aria-selected={i === active}
+                aria-label={x.name}
+                onClick={() => select(i, true)}
+                className="hud-tick"
+                style={{ ['--c' as string]: x.color }}
+              />
+            ))}
+          </div>
+          <p className="mono-label mt-4 hidden lg:block">Drag to look around. Click a district.</p>
+        </aside>
       </div>
-
-      {/* Particle Background */}
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: { color: { value: "transparent" } },
-          fpsLimit: 60,
-          detectRetina: true,
-          particles: {
-            number: { value: 100, density: { enable: true, area: 700 } },
-            color: { value: "#00bfff" },
-            shape: { type: "circle" },
-            opacity: {
-              value: 0.8,
-              random: true,
-              anim: { enable: true, speed: 26, opacity_min: 0.8, sync: false },
-            },
-            size: { value: { min: 1, max: 3 } },
-            move: {
-              enable: true,
-              speed: 2,
-              direction: "none",
-              outModes: "bounce",
-            },
-            links: {
-              enable: true,
-              color: "#abb8c2",
-              distance: 120,
-              opacity: 0.4,
-              width: 2,
-            },
-          },
-        }}
-        className="absolute inset-0 z-0"
-      />
-
-      {/* Glowing Background Orb */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: [1, 1.1, 1], opacity: 1 }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          repeatType: "mirror",
-          ease: "easeInOut",
-        }}
-        className="absolute w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-700 blur-3xl opacity-40 top-[5%]"
-      />
-
-      {/* Animated Logo */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: -30 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className="z-10 mt-[5vh]"
-      >
-        <Image
-          src="/Logo.png"
-          alt="TAIO Hub Logo"
-          width={250}
-          height={350}
-          className="rounded-full shadow-2xl shadow-cyan-500/30"
-          priority
-        />
-      </motion.div>
-
-      {/* Trusted Badge - NOW CLICKABLE TO GDPR PAGE */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="mt-8 z-10"
-      >
-        <Link 
-          href="/gdpr"
-          className="inline-block bg-gradient-to-r from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border border-cyan-500/30 text-cyan-300 px-6 py-3 rounded-full text-sm md:text-base font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/40 hover:scale-105 transition-all duration-300 cursor-pointer"
-        >
-          GDPR COMPLIANT
-        </Link>
-      </motion.div>
-
-      {/* Headline */}
-      <motion.h1
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
-        className="relative text-4xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mt-10 mb-6 tracking-tight z-10 max-w-5xl mx-auto leading-tight"
-      >
-        <span className="animate-gradient-shimmer bg-[length:200%_auto] bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent inline-block">
-          From the first ring, to the final drop,<br className="hidden md:block" /> we've got you covered.
-        </span>
-      </motion.h1>
-
-      {/* CTA Button - NOW ROUTES TO THE NEW QUOTE PAGE */}
-      <motion.button
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.9 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-cyan-500 hover:to-blue-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-400/70 transition-all duration-300 z-10 mt-8"
-        onClick={() => router.push('/quote')}
-      >
-        Get Started Today
-      </motion.button>
-
-      {/* Gradient Shimmer Animation */}
-      <style jsx>{`
-        @keyframes gradientShimmer {
-          0% { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-        .animate-gradient-shimmer {
-          animation: gradientShimmer 6s linear infinite;
-        }
-      `}</style>
     </section>
   );
 }
-
-export default Hero;

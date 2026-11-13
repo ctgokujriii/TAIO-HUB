@@ -12,7 +12,7 @@ export default function Contact() {
     email: '',
     phone: '',
     company: '',
-    service: 'dispatch',
+    service: 'Website Design & Development',
     message: ''
   });
 
@@ -43,7 +43,7 @@ export default function Contact() {
       setSubmitStatus('success');
       formRef.current?.reset();
       setFormData({
-        name: '', email: '', phone: '', company: '', service: 'dispatch', message: ''
+        name: '', email: '', phone: '', company: '', service: 'Website Design & Development', message: ''
       });
     } catch (error) {
       console.error('EmailJS error:', error);
@@ -178,12 +178,13 @@ export default function Contact() {
                   <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-2">Service Interested In *</label>
                   <select id="service" name="service" required value={formData.service} onChange={handleChange}
                     className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all">
-                    <option value="Cabs Dispatch Outsourcing">Cabs Dispatch Outsourcing</option>
-                    <option value="Cabs Telephonist Outsourcing">Cabs Telephonist Outsourcing</option>
-                    <option value="UK Council School Runs Outsourcing">UK Council School Runs Outsourcing</option>
-                    <option value="Admin Management">Admin Management</option>
-                    <option value="UK/US Trucking Solutions">UK/US Trucking Solutions</option>
-                    <option value="Cabs Dispatch/Telephonist Outsource (other than UK)">Cabs Dispatch/Telephonist Outsource </option>
+                    <option value="Website Design & Development">Website Design & Development</option>
+                    <option value="SEO">SEO</option>
+                    <option value="Paid Ads">Paid Ads</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Brand & Content">Brand & Content</option>
+                    <option value="Hosting & Care">Hosting & Care</option>
+                    <option value="Not sure yet">Not sure yet</option>
                   </select>
                 </div>
 
