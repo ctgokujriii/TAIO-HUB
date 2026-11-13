@@ -1,7 +1,6 @@
 'use client';
 
 import Hero from './components/Hero';
-import Services from './components/ServicesHome';
 import Process from './components/Process';
 import About from './components/About';
 import Testimonials from './components/Testimonials';
@@ -11,9 +10,8 @@ import ChatbotWidget from './components/ChatbotWidget';
 
 export default function Home() {
   return (
-    <div className="relative overflow-x-hidden">
+    <div className="relative overflow-x-clip">
       <Hero />
-      <Services />
       <Process />
       <About />
       <Testimonials />

@@ -54,28 +54,72 @@ h1, h2, h3 { font-family: var(--font-display), system-ui, sans-serif; }
   .hero-city { background: radial-gradient(ellipse 70% 55% at 62% 48%, rgba(120, 70, 255, 0.22), transparent 70%); }
   .hero-scrim {
     background:
-      linear-gradient(to top, var(--night) 0%, rgba(7, 5, 18, 0.82) 22%, transparent 55%),
-      linear-gradient(to right, rgba(7, 5, 18, 0.7) 0%, transparent 55%);
+      linear-gradient(to top, var(--night) 0%, rgba(7, 5, 18, 0.9) 38%, transparent 62%);
   }
-  .hero-copy { animation: rise 800ms ease-out both; }
-  .hud {
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 20px;
-    background: rgba(13, 10, 36, 0.72);
-    backdrop-filter: blur(14px);
-    box-shadow: 0 0 60px -30px var(--c);
-    animation: rise 800ms 150ms ease-out both;
+  @media (min-width: 1024px) {
+    .hero-scrim {
+      background:
+        linear-gradient(to top, var(--night) 0%, transparent 18%),
+        linear-gradient(to right, rgba(7, 5, 18, 0.85) 0%, rgba(7, 5, 18, 0.5) 35%, transparent 58%);
+    }
   }
-  .hud-tick {
-    height: 6px;
-    flex: 1;
-    border-radius: 3px;
-    background: rgba(150, 140, 255, 0.2);
-    transition: background-color 200ms ease-out;
+  /* text panels that swap as the tour moves from stop to stop */
+  .stop-panel {
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 2.5rem;
+    max-width: 40rem;
+    opacity: 0;
+    transform: translateY(14px);
+    visibility: hidden;
+    transition: opacity 220ms ease-out, transform 220ms ease-out, visibility 0s 220ms;
   }
-  .hud-tick:hover { background: rgba(150, 140, 255, 0.45); }
-  .hud-tick[aria-selected='true'] { background: var(--c); box-shadow: 0 0 12px var(--c); }
+  .stop-panel.is-on {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 220ms ease-out 120ms, transform 220ms ease-out 120ms, visibility 0s;
+  }
+  @media (min-width: 1024px) {
+    .stop-panel { bottom: auto; top: 50%; right: auto; width: 40%; transform: translateY(calc(-50% + 14px)); }
+    .stop-panel.is-on { transform: translateY(-50%); }
+  }
+
+  .city-rail {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-end;
+  }
+  .city-rail-dot { display: flex; align-items: center; gap: 10px; padding: 2px 0; }
+  .city-rail-dot::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid rgba(190, 185, 255, 0.55);
+    transition: background-color 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out;
+  }
+  .city-rail-dot span {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--muted-ink);
+    opacity: 0;
+    transition: opacity 200ms ease-out;
+  }
+  .city-rail-dot:hover span, .city-rail-dot:focus-visible span { opacity: 1; }
+  .city-rail-dot[aria-current='true']::after { background: var(--c); border-color: var(--c); box-shadow: 0 0 12px var(--c); }
+  @media (max-width: 1023px) {
+    .city-rail { top: 6rem; transform: none; }
+    .city-rail-dot span { display: none; }
+  }
 
   .city-label {
     position: absolute;
@@ -138,7 +182,7 @@ h1, h2, h3 { font-family: var(--font-display), system-ui, sans-serif; }
 .glow { box-shadow: 0 0 10px #EF4444; }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-copy, .hud { animation: none; }
+  .stop-panel { transition: none; }
 }
 
 @layer base {
@@ -182,3 +226,5 @@ h1, h2, h3 { font-family: var(--font-display), system-ui, sans-serif; }
 @media (max-width: 1023px) {
   .city-label:not(.is-active) { display: none; }
 }
+/* while one district is in focus, the others give up their labels */
+[data-focus='true'] .city-label:not(.is-active) { display: none; }

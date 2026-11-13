@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type MutableRefObject } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { districts } from './cityData';
 
 type Props = {
+  /** scroll position in stops: 0 is the overview, 1..n is district n */
+  stop: MutableRefObject<number>;
+  /** focused district, or -1 on the overview */
   active: number;
-  onSelect: (index: number, fromUser: boolean) => void;
+  onSelect: (index: number) => void;
 };
 
 // Small seeded random so the city is the same on every visit.
@@ -36,7 +38,7 @@ const VERT = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionM
 const FRAG = `uniform vec3 uColor; uniform float uBoost; uniform float uSolid; varying vec2 vUv;
 void main(){ float g = mix(0.05, 0.3, pow(vUv.y, 1.6)); g = mix(g, 0.9, uSolid); gl_FragColor = vec4(uColor * g * uBoost, 1.0); }`;
 
-export default function CityScene({ active, onSelect }: Props) {
+export default function CityScene({ stop, active, onSelect }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const labelRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeRef = useRef(active);
@@ -223,21 +225,27 @@ export default function CityScene({ active, onSelect }: Props) {
       ),
     );
 
-    // camera + controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = false; // keep page scroll working
-    controls.enablePan = false;
-    controls.enableDamping = true;
-    controls.autoRotate = !reduced;
-    controls.autoRotateSpeed = 0.55;
-    controls.minPolarAngle = 0.75;
-    controls.maxPolarAngle = 1.32;
-    controls.target.set(0, 2.2, 0);
-    if (coarse) {
-      // on touch screens the city turns by itself so swipes still scroll the page
-      controls.enabled = false;
-      renderer.domElement.style.touchAction = 'pan-y';
-    }
+    // camera path: one resting place for the overview, then one per district
+    type Stop = { t: THREE.Vector3; dir: THREE.Vector3; dist: number };
+    const stops: Stop[] = [{ t: new THREE.Vector3(0, 2.2, 0), dir: new THREE.Vector3(0.62, 0.48, 0.62).normalize(), dist: 46 }];
+    districts.forEach((d) => {
+      const out = new THREE.Vector3(d.x, 0, d.z);
+      if (out.length() < 3) out.set(0.7, 0, 0.7);
+      out.normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.5);
+      out.y = 0.55;
+      stops.push({ t: new THREE.Vector3(d.x, d.h * 0.4, d.z), dir: out.normalize(), dist: 15 + d.n * 2.2 + d.h * 0.8 });
+    });
+    const smooth = (x: number) => {
+      const k = Math.min(1, Math.max(0, (x - 0.15) / 0.7));
+      return k * k * (3 - 2 * k);
+    };
+    const wantT = new THREE.Vector3();
+    const wantDir = new THREE.Vector3();
+    const curT = stops[0].t.clone();
+    const curPos = new THREE.Vector3();
+    const up = new THREE.Vector3(0, 1, 0);
+    let first = true;
+    let pointerX = 0;
 
     let w = 1;
     let h = 1;
@@ -246,13 +254,9 @@ export default function CityScene({ active, onSelect }: Props) {
       h = wrap.clientHeight;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
-      const wide = w >= 1024;
-      const dist = 46 * Math.max(1, Math.min(2.1, 1.25 / camera.aspect));
-      const dir = camera.position.lengthSq() > 1 ? camera.position.clone().sub(controls.target).normalize() : new THREE.Vector3(0.62, 0.48, 0.62).normalize();
-      camera.position.copy(controls.target).addScaledVector(dir, dist);
-      // shift the city away from the copy: right on desktop, up on phones
-      if (wide) camera.setViewOffset(w, h, -w * 0.14, -h * 0.02, w, h);
-      else camera.setViewOffset(w, h, 0, h * 0.27, w, h);
+      // keep the city clear of the copy: to the right on desktop, in the top half on phones
+      if (w >= 1024) camera.setViewOffset(w, h, -w * 0.21, 0, w, h);
+      else camera.setViewOffset(w, h, 0, h * 0.2, w, h);
       camera.updateProjectionMatrix();
     };
     resize();
@@ -271,7 +275,9 @@ export default function CityScene({ active, onSelect }: Props) {
       return hits.length ? (hits[0].object.userData.index as number) : -1;
     };
     const onMove = (e: PointerEvent) => {
-      renderer.domElement.style.cursor = hit(e) >= 0 ? 'pointer' : 'grab';
+      renderer.domElement.style.cursor = hit(e) >= 0 ? 'pointer' : 'default';
+      const r = renderer.domElement.getBoundingClientRect();
+      pointerX = ((e.clientX - r.left) / r.width) * 2 - 1;
     };
     const onDown = (e: PointerEvent) => {
       down = { x: e.clientX, y: e.clientY };
@@ -279,17 +285,12 @@ export default function CityScene({ active, onSelect }: Props) {
     const onUp = (e: PointerEvent) => {
       if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
       const i = hit(e);
-      if (i >= 0) selectRef.current(i, true);
+      if (i >= 0) selectRef.current(i);
     };
     const el = renderer.domElement;
     el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerdown', onDown);
     el.addEventListener('pointerup', onUp);
-    const stopSpin = () => {
-      controls.autoRotate = false;
-    };
-    controls.addEventListener('start', stopSpin);
-
     // loop
     let raf = 0;
     let visible = true;
@@ -315,13 +316,14 @@ export default function CityScene({ active, onSelect }: Props) {
         towers.forEach((tw) => (tw.mesh.scale.y = tw.h));
       }
 
+      const focus = activeRef.current;
       districts.forEach((_, i) => {
-        const on = i === activeRef.current;
-        const target = on ? 1.9 : 0.85;
+        const on = i === focus;
+        const target = focus < 0 ? 1 : on ? 1.9 : 0.3;
         for (const m of [glassMats[i * 2], glassMats[i * 2 + 1]]) {
           m.uniforms.uBoost.value += (target - m.uniforms.uBoost.value) * 0.08;
         }
-        lineMats[i].opacity += ((on ? 0.95 : 0.4) - lineMats[i].opacity) * 0.08;
+        lineMats[i].opacity += ((focus < 0 ? 0.5 : on ? 0.95 : 0.18) - lineMats[i].opacity) * 0.08;
       });
 
       if (!reduced) {
@@ -336,7 +338,22 @@ export default function CityScene({ active, onSelect }: Props) {
         o.sprite.position.set(Math.cos(a) * o.r, o.y, Math.sin(a) * o.r * 0.92);
       });
 
-      controls.update();
+      // camera follows the scroll position between two neighbouring stops
+      const sPos = Math.min(stops.length - 1, Math.max(0, stop.current));
+      const a = stops[Math.min(stops.length - 2, Math.floor(sPos))];
+      const b = stops[Math.min(stops.length - 2, Math.floor(sPos)) + 1];
+      const f = smooth(sPos - Math.min(stops.length - 2, Math.floor(sPos)));
+      const fit = Math.max(1, Math.min(2.1, 1.25 / camera.aspect));
+      wantT.lerpVectors(a.t, b.t, f);
+      wantDir.lerpVectors(a.dir, b.dir, f).normalize();
+      if (!reduced) wantDir.applyAxisAngle(up, Math.sin(t * 0.25) * 0.07 + pointerX * 0.06);
+      wantDir.multiplyScalar((a.dist + (b.dist - a.dist) * f) * fit).add(wantT);
+      const damp = reduced || first ? 1 : 0.07;
+      first = false;
+      curT.lerp(wantT, damp);
+      curPos.lerp(wantDir, damp);
+      camera.position.copy(curPos);
+      camera.lookAt(curT);
       renderer.render(scene, camera);
 
       // pin the HTML labels to their districts
@@ -357,7 +374,6 @@ export default function CityScene({ active, onSelect }: Props) {
       el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerdown', onDown);
       el.removeEventListener('pointerup', onUp);
-      controls.dispose();
       disposables.forEach((d) => d.dispose());
       renderer.dispose();
       el.remove();
@@ -365,7 +381,7 @@ export default function CityScene({ active, onSelect }: Props) {
   }, []);
 
   return (
-    <div ref={wrapRef} className="absolute inset-0" aria-hidden="true">
+    <div ref={wrapRef} className="absolute inset-0" aria-hidden="true" data-focus={active >= 0}>
       {districts.map((d, i) => (
         <button
           key={d.id}
@@ -373,7 +389,7 @@ export default function CityScene({ active, onSelect }: Props) {
             labelRefs.current[i] = node;
           }}
           tabIndex={-1}
-          onClick={() => onSelect(i, true)}
+          onClick={() => onSelect(i)}
           className={`city-label ${i === active ? 'is-active' : ''}`}
           style={{ ['--c' as string]: d.color, opacity: 0 }}
         >
