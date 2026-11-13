@@ -4,7 +4,6 @@ import Hero from './components/Hero';
 import Process from './components/Process';
 import About from './components/About';
 import Testimonials from './components/Testimonials';
-import LatestUpdates from './components/LatestUpdates';
 import Contact from './components/Contact';
 import ChatbotWidget from './components/ChatbotWidget';
 
@@ -15,7 +14,6 @@ export default function Home() {
       <Process />
       <About />
       <Testimonials />
-      <LatestUpdates />
       <Contact />
       <ChatbotWidget />
     </div>
