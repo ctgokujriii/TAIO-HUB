@@ -121,7 +121,7 @@ export default function GDPRPage() {
             If you have specific questions about how TAIO Hub handles your data, or need to request a Data Processing Agreement (DPA), our team is here to help.
           </p>
           <a
-            href="mailto:info@taiohub.com"
+            href="mailto:soperfanta666@gmail.com"
             className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-3 rounded-full font-semibold transition-colors shadow-lg shadow-cyan-500/20"
           >
             Contact our Privacy Team

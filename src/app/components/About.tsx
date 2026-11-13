@@ -1,7 +1,7 @@
 const reasons = [
   { title: 'One team for everything', desc: 'The people who build your website also run your marketing, so nothing gets lost between agencies.' },
   { title: 'Built to perform', desc: 'Fast pages, mobile first and ready for search from day one.' },
-  { title: 'Straight communication', desc: 'Quick replies, clear reporting and no chasing. Ask the clients below.' },
+  { title: 'Straight communication', desc: 'Quick replies, clear reporting and no chasing.' },
 ];
 
 export default function About() {

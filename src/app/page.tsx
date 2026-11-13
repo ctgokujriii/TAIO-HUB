@@ -3,7 +3,7 @@
 import Hero from './components/Hero';
 import Process from './components/Process';
 import About from './components/About';
-import Testimonials from './components/Testimonials';
+import Portfolio from './components/Portfolio';
 import Contact from './components/Contact';
 import ChatbotWidget from './components/ChatbotWidget';
 
@@ -13,7 +13,7 @@ export default function Home() {
       <Hero />
       <Process />
       <About />
-      <Testimonials />
+      <Portfolio />
       <Contact />
       <ChatbotWidget />
     </div>
