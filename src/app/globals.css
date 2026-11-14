@@ -228,3 +228,68 @@ h1, h2, h3 { font-family: var(--font-display), system-ui, sans-serif; }
 }
 /* while one district is in focus, the others give up their labels */
 [data-focus='true'] .city-label:not(.is-active) { display: none; }
+
+@layer components {
+  .work-card {
+    display: block;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: var(--night-2);
+    transition: border-color 200ms ease-out;
+  }
+  .work-card:hover { border-color: rgba(150, 140, 255, 0.45); }
+  .work-arrow {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    transition: background-color 200ms ease-out, color 200ms ease-out, border-color 200ms ease-out;
+  }
+  .work-card:hover .work-arrow { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+
+  .contact-line {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .contact-value {
+    font-family: var(--font-display), sans-serif;
+    font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+    font-weight: 600;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .contact-form {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(13, 10, 36, 0.72);
+    padding: clamp(20px, 4vw, 36px);
+  }
+  .field { display: block; }
+  .field > span {
+    display: block;
+    margin-bottom: 8px;
+    font-family: var(--font-mono), monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--muted-ink);
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--night);
+    color: var(--ink);
+    padding: 12px 14px;
+    font-size: 1rem;
+    transition: border-color 200ms ease-out;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--brand); }
+}

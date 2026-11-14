@@ -1,33 +1,30 @@
-import { useState, useRef } from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
-import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+'use client';
+
+import { useRef, useState } from 'react';
+import { ArrowRight, Mail, Phone } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 
-export default function Contact() {
-  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.1 });
+export const CONTACT_EMAIL = 'soperfanta666@gmail.com';
+export const CONTACT_PHONE_DISPLAY = '0315 4434344';
+export const CONTACT_PHONE_LINK = '+923154434344';
+
+const services = ['Website Design & Development', 'SEO', 'Paid Ads', 'Social Media', 'Brand & Content', 'Hosting & Care', 'Not sure yet'];
+const empty = { name: '', email: '', phone: '', company: '', service: services[0], message: '' };
+
+export default function Contact({ as: Heading = 'h2' }: { as?: 'h1' | 'h2' }) {
   const formRef = useRef<HTMLFormElement>(null);
-
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    service: 'Website Design & Development',
-    message: ''
-  });
-
+  const [formData, setFormData] = useState(empty);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus('idle');
-
+    setStatus('idle');
     try {
       await emailjs.send(
-        'service_z5fdow8',     // ← Replace with your EmailJS Service ID
-        'template_4zwzfra',    // ← Replace with your EmailJS Template ID
+        'service_z5fdow8',
+        'template_4zwzfra',
         {
           name: formData.name,
           email: formData.email,
@@ -35,189 +32,103 @@ export default function Contact() {
           company: formData.company || 'Not provided',
           service: formData.service,
           message: formData.message,
-          to_email: 'ali.aleem75@gmail.com',  // ← This ensures it goes to you
+          to_email: 'ali.aleem75@gmail.com',
         },
-        'pQzQumk14f9kJ8B0i'      // ← Replace with your EmailJS Public Key
+        'pQzQumk14f9kJ8B0i',
       );
-
-      setSubmitStatus('success');
+      setStatus('success');
       formRef.current?.reset();
-      setFormData({
-        name: '', email: '', phone: '', company: '', service: 'Website Design & Development', message: ''
-      });
+      setFormData(empty);
     } catch (error) {
       console.error('EmailJS error:', error);
-      setSubmitStatus('error');
+      setStatus('error');
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => setSubmitStatus('idle'), 6000);
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   return (
-    <section id="contact" className="py-24 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={ref} className="text-center mb-16">
-          <h2 className={`text-4xl sm:text-5xl font-bold mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              Get Your Free Quote
-            </span>
-          </h2>
-          <p className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            Ready to transform your operations? Let's discuss how we can help your business grow.
+    <section id="contact" className="relative px-6 py-24">
+      <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1fr_1.1fr]">
+        <div>
+          <p className="mono-label mb-4">Contact</p>
+          <Heading className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-6xl">
+            Tell us what you are building.
+          </Heading>
+          <p className="mt-5 max-w-md text-lg text-soft">
+            Send a few lines about your business and what you need. We reply with a plan and a price.
           </p>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Info Column */}
-          <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-cyan-500/20 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold mb-6 text-white">Contact Information</h3>
-
-              <div className="space-y-6 mb-8">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 p-3 rounded-lg">
-                    <Mail className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Email Us</h4>
-                    <a href="mailto:info@taiohub.com" className="text-gray-300 hover:text-cyan-400 transition-colors">
-                      info@taiohub.com
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 p-3 rounded-lg">
-                    <Phone className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Call / WhatsApp</h4>
-                    <a
-                      href="https://wa.me/447346144030"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-300 hover:text-cyan-400 transition-colors flex items-center gap-2"
-                    >
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.678 1.447h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.883 3.485" />
-                      </svg>
-                      +44 7346 144 030
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 p-3 rounded-lg">
-                    <MapPin className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Location</h4>
-                    <p className="text-gray-300">United Kingdom</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border border-cyan-500/30 rounded-xl p-6">
-                <h4 className="font-bold text-white mb-3">Business Hours</h4>
-                <div className="space-y-2 text-gray-300 text-sm">
-                  <p>Monday - Friday: 8:00 AM - 8:00 PM</p>
-                  <p>Saturday: 9:00 AM - 4:00 PM</p>
-                  <p className="text-cyan-400 font-semibold">24/7 Emergency Service Available</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Form Column */}
-          <div className={`transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-            <form ref={formRef} onSubmit={handleSubmit} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-cyan-500/20 rounded-2xl p-8">
-              <div className="space-y-6">
-                {/* All your input fields remain the same */}
-                {/* ... (name, email, phone, company, service, message) ... */}
-                {/* I'll keep them exactly as you had for brevity */}
-
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
-                  <input type="text" id="name" name="name" required value={formData.name} onChange={handleChange}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
-                    placeholder="John Smith" />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
-                  <input type="email" id="email" name="email" required value={formData.email} onChange={handleChange}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
-                    placeholder="john@company.co.uk" />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
-                  <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
-                    placeholder="+44 7XXX XXX XXX" />
-                </div>
-
-                <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">Company Name *</label>
-                  <input type="text" id="company" name="company" value={formData.company} onChange={handleChange}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
-                    placeholder="Your Company Name" />
-                </div>
-
-                <div>
-                  <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-2">Service Interested In *</label>
-                  <select id="service" name="service" required value={formData.service} onChange={handleChange}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all">
-                    <option value="Website Design & Development">Website Design & Development</option>
-                    <option value="SEO">SEO</option>
-                    <option value="Paid Ads">Paid Ads</option>
-                    <option value="Social Media">Social Media</option>
-                    <option value="Brand & Content">Brand & Content</option>
-                    <option value="Hosting & Care">Hosting & Care</option>
-                    <option value="Not sure yet">Not sure yet</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">Message *</label>
-                  <textarea id="message" name="message" required value={formData.message} onChange={handleChange} rows={4}
-                    className="w-full bg-gray-900/50 border border-cyan-500/30 rounded-lg px-4 py-3 text-white focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all resize-none"
-                    placeholder="Tell us about your requirements..." />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-400/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  {isSubmitting ? 'Sending...' : <>Send Message <Send className="ml-2 w-5 h-5" /></>}
-                </button>
-
-                {submitStatus === 'success' && (
-                  <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-green-400 text-center font-medium">
-                    Thank you! Your message has been sent successfully. We'll reply within 24 hours.
-                  </div>
-                )}
-
-                {submitStatus === 'error' && (
-                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-400 text-center font-medium">
-                    Oops! Something went wrong. Please email us directly at info@taiohub.com
-                  </div>
-                )}
-              </div>
-            </form>
+          <div className="mt-10 border-t border-line">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="contact-line group">
+              <Mail className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
+              <span>
+                <span className="mono-label block">Email</span>
+                <span className="contact-value">{CONTACT_EMAIL}</span>
+              </span>
+              <ArrowRight className="ml-auto h-4 w-4 text-soft transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+            </a>
+            <a href={`tel:${CONTACT_PHONE_LINK}`} className="contact-line group">
+              <Phone className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
+              <span>
+                <span className="mono-label block">Call</span>
+                <span className="contact-value">{CONTACT_PHONE_DISPLAY}</span>
+              </span>
+              <ArrowRight className="ml-auto h-4 w-4 text-soft transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+            </a>
           </div>
         </div>
+
+        <form ref={formRef} onSubmit={handleSubmit} className="contact-form">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label className="field">
+              <span>Name</span>
+              <input name="name" required autoComplete="name" value={formData.name} onChange={handleChange} />
+            </label>
+            <label className="field">
+              <span>Email</span>
+              <input type="email" name="email" required autoComplete="email" value={formData.email} onChange={handleChange} />
+            </label>
+            <label className="field">
+              <span>Phone (optional)</span>
+              <input type="tel" name="phone" autoComplete="tel" value={formData.phone} onChange={handleChange} />
+            </label>
+            <label className="field">
+              <span>Business (optional)</span>
+              <input name="company" autoComplete="organization" value={formData.company} onChange={handleChange} />
+            </label>
+          </div>
+          <label className="field mt-5">
+            <span>What do you need?</span>
+            <select name="service" value={formData.service} onChange={handleChange}>
+              {services.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </label>
+          <label className="field mt-5">
+            <span>Message</span>
+            <textarea name="message" required rows={5} value={formData.message} onChange={handleChange} />
+          </label>
+
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            <button type="submit" disabled={isSubmitting} className="btn-primary disabled:opacity-60">
+              {isSubmitting ? 'Sending…' : 'Send message'}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <p role="status" className="text-sm text-soft">
+              {status === 'success' && 'Thanks. Your message is with us and we will reply soon.'}
+              {status === 'error' && (
+                <>
+                  That did not send. Please email <a className="underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> instead.
+                </>
+              )}
+            </p>
+          </div>
+        </form>
       </div>
     </section>
   );
