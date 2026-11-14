@@ -5,7 +5,7 @@ const work = [
     name: 'ARISE Gaming Zone',
     kind: 'Gaming lounge · Lahore',
     desc: 'A booking-led site for a PS5 lounge, with game pages built to be found in search.',
-    url: 'https://arise-gz.vercel.app',
+    url: 'https://www.arisegaming.zone',
     img: '/portfolio/arise.jpg',
   },
   {
@@ -26,14 +26,14 @@ const work = [
     name: 'Zubair Plumbing Services',
     kind: 'Local service · Lahore',
     desc: 'A 24/7 plumber’s site built around one-tap calls and WhatsApp enquiries.',
-    url: 'https://zubairplumbing.vercel.app',
+    url: 'https://www.zplumbings.online',
     img: '/portfolio/zubair.jpg',
   },
   {
     name: 'ruhbyhs',
     kind: 'Brand site · Luxury perfume',
     desc: 'A quiet, editorial storefront with a cinematic intro for a perfume label.',
-    url: 'https://v0-ruh-by-hs.vercel.app',
+    url: 'https://www.ruhbyhs.com',
     img: '/portfolio/ruh.jpg',
   },
 ];
